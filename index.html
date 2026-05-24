@@ -3,497 +3,445 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maktaba ya Masomo — Swahili AI Trainer</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Swahili AI Trainer — Chuo cha AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Spline+Sans+Mono:wght@400;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
+/* ── TOKENS ──────────────────────────────── */
 :root {
-  --ink:     #08111F;
-  --paper:   #F8F4EE;
-  --cream:   #EEE8DC;
-  --blue:    #0A3D91;
-  --blue2:   #1255C4;
-  --sky:     #E8F0FF;
-  --gold:    #C47D0A;
-  --gold-lt: #FFF4DC;
-  --rust:    #B84020;
-  --green:   #1A6B3A;
-  --green-lt:#E4F5EC;
-  --muted:   #6B6455;
-  --border:  #D8D0C0;
-  --white:   #FFFFFF;
-  --card-sh: 0 2px 16px rgba(8,17,31,0.08);
+  --ink:      #070E1C;
+  --ink2:     #1A2540;
+  --paper:    #F2EDE4;
+  --cream:    #E8E2D8;
+  --blue:     #0B3EAA;
+  --blue2:    #1652D4;
+  --sky:      #D6E4FF;
+  --gold:     #B87800;
+  --gold-lt:  #FFF2CC;
+  --rust:     #B83C18;
+  --rust-lt:  #FFEDE8;
+  --green:    #1A6B3A;
+  --green-lt: #E2F5EC;
+  --purple:   #5C1FBD;
+  --purple-lt:#F0EAFF;
+  --border:   #D0C8BC;
+  --muted:    #7A7264;
+  --white:    #FFFFFF;
+  --card-r:   10px;
 }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-html { scroll-behavior:smooth; }
+html { scroll-behavior:smooth; font-size:16px; }
+
 body {
-  font-family:'Outfit',sans-serif;
+  font-family:'DM Sans',sans-serif;
   background:var(--paper);
   color:var(--ink);
+  min-height:100vh;
   overflow-x:hidden;
 }
 
-/* ── NOISE ── */
-body::after {
+/* grain */
+body::before {
   content:'';
-  position:fixed; inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-  pointer-events:none; z-index:0; mix-blend-mode:multiply;
+  position:fixed; inset:0; pointer-events:none; z-index:1000;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
 }
 
-/* ── NAV ── */
+/* ── NAV ─────────────────────────────────── */
 nav {
-  position:sticky; top:0; z-index:100;
-  background:rgba(248,244,238,0.93);
-  backdrop-filter:blur(16px);
+  position:sticky; top:0; z-index:500;
+  background:rgba(242,237,228,0.92);
+  backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
-  padding:0 40px;
-  display:flex; align-items:center; gap:32px; height:64px;
+  height:60px;
+  display:flex; align-items:center;
+  padding:0 32px; gap:28px;
 }
 .nav-logo {
-  font-family:'Playfair Display',serif;
-  font-size:18px; font-weight:700;
-  color:var(--blue); text-decoration:none;
-  letter-spacing:-0.5px; white-space:nowrap;
+  font-family:'Instrument Serif',serif;
+  font-size:20px; color:var(--blue);
+  text-decoration:none; letter-spacing:-0.5px;
+  flex-shrink:0;
 }
-.nav-logo em { font-style:italic; color:var(--gold); }
-.nav-links {
-  display:flex; gap:24px; align-items:center; flex:1;
+.nav-logo i { font-style:italic; color:var(--gold); }
+.nav-sep { flex:1; }
+.nav-pill {
+  display:flex; align-items:center; gap:6px;
+  padding:6px 14px; border-radius:20px;
+  font-size:13px; font-weight:500;
+  background:var(--cream); border:1px solid var(--border);
+  color:var(--muted); text-decoration:none; cursor:pointer;
+  transition:all .2s;
 }
-.nav-links a {
-  font-size:14px; font-weight:500; color:var(--muted);
-  text-decoration:none; transition:color 0.2s;
+.nav-pill:hover, .nav-pill.active {
+  background:var(--blue); color:var(--white); border-color:var(--blue);
 }
-.nav-links a:hover, .nav-links a.active { color:var(--blue); }
-.nav-right {
-  display:flex; gap:12px; align-items:center; margin-left:auto;
+.nav-wa {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 18px; border-radius:6px;
+  background:var(--green); color:white;
+  font-size:13px; font-weight:600;
+  text-decoration:none; transition:opacity .2s;
 }
-.btn-outline {
-  padding:8px 18px; border:1.5px solid var(--blue);
-  border-radius:4px; font-size:13px; font-weight:600;
-  color:var(--blue); background:transparent;
-  cursor:pointer; font-family:'Outfit',sans-serif;
-  transition:all 0.2s; text-decoration:none;
-}
-.btn-outline:hover { background:var(--blue); color:white; }
-.btn-solid {
-  padding:8px 18px; background:var(--blue);
-  border:1.5px solid var(--blue);
-  border-radius:4px; font-size:13px; font-weight:600;
-  color:white; cursor:pointer; font-family:'Outfit',sans-serif;
-  transition:all 0.2s; text-decoration:none;
-}
-.btn-solid:hover { background:var(--blue2); }
+.nav-wa:hover { opacity:.88; }
 
-/* ── HERO ── */
+/* ── HERO ─────────────────────────────────── */
 .hero {
   background:var(--ink);
-  padding:80px 40px 0;
-  position:relative; overflow:hidden;
-  min-height:420px;
-  display:grid; grid-template-columns:1fr 400px;
+  padding:64px 32px 0;
+  display:grid;
+  grid-template-columns:1fr 380px;
   gap:40px; align-items:end;
-  max-width:100%;
-}
-.hero::before {
-  content:'';
-  position:absolute; inset:0;
-  background:
-    radial-gradient(ellipse 60% 80% at 110% 50%, rgba(10,61,145,0.4) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 60% at -10% 80%, rgba(196,125,10,0.15) 0%, transparent 70%);
+  max-width:100%; position:relative; overflow:hidden;
 }
 .hero-grid {
   position:absolute; inset:0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size:48px 48px;
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size:52px 52px;
 }
-.hero-content { position:relative; z-index:1; padding-bottom:60px; }
+.hero-glow {
+  position:absolute;
+  width:500px; height:500px; border-radius:50%;
+  background:radial-gradient(circle, rgba(11,62,170,.35) 0%, transparent 65%);
+  top:-100px; right:300px; pointer-events:none;
+}
+.hero-text { position:relative; z-index:1; padding-bottom:56px; }
 .hero-eyebrow {
   display:inline-flex; align-items:center; gap:8px;
-  background:rgba(196,125,10,0.15);
-  border:1px solid rgba(196,125,10,0.3);
-  border-radius:20px; padding:5px 14px;
-  font-size:12px; font-weight:600;
-  color:#F0C060; letter-spacing:0.08em;
+  background:rgba(184,120,0,.15);
+  border:1px solid rgba(184,120,0,.3);
+  border-radius:20px; padding:4px 14px;
+  font-size:11px; font-weight:600;
+  color:#F5C84A; letter-spacing:.1em;
   text-transform:uppercase; margin-bottom:20px;
 }
 .hero-title {
-  font-family:'Playfair Display',serif;
-  font-size:clamp(36px,5vw,60px);
-  font-weight:900; color:white;
-  line-height:1.1; letter-spacing:-1.5px;
-  margin-bottom:16px;
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(34px,5.5vw,62px);
+  color:var(--white); line-height:1.05;
+  letter-spacing:-1.5px; margin-bottom:14px;
 }
-.hero-title em { font-style:italic; color:#7AADFF; }
+.hero-title i { font-style:italic; color:#7AADFF; }
 .hero-sub {
-  font-size:16px; color:rgba(255,255,255,0.55);
-  line-height:1.7; max-width:480px; margin-bottom:32px;
+  font-size:15px; color:rgba(255,255,255,.5);
+  line-height:1.75; max-width:460px; margin-bottom:28px;
 }
-.hero-stats {
-  display:flex; gap:32px; flex-wrap:wrap;
+.hero-kpis { display:flex; gap:28px; flex-wrap:wrap; }
+.kpi-val {
+  font-family:'Instrument Serif',serif;
+  font-size:26px; color:var(--white); letter-spacing:-1px;
 }
-.h-stat-val {
-  font-family:'Playfair Display',serif;
-  font-size:28px; font-weight:700; color:white;
-  letter-spacing:-1px;
-}
-.h-stat-lbl { font-size:12px; color:rgba(255,255,255,0.4); margin-top:2px; }
+.kpi-lbl { font-size:11px; color:rgba(255,255,255,.38); margin-top:1px; }
 
-/* Hero card */
+/* hero enroll card */
 .hero-card {
   position:relative; z-index:1;
-  background:white;
-  border-radius:12px 12px 0 0;
-  padding:28px;
-  box-shadow:0 -8px 40px rgba(0,0,0,0.3);
+  background:var(--white); border-radius:12px 12px 0 0;
+  padding:24px; box-shadow:0 -12px 48px rgba(0,0,0,.28);
   align-self:end;
 }
-.hc-label {
-  font-size:11px; font-weight:700;
-  color:var(--gold); letter-spacing:0.1em;
-  text-transform:uppercase; margin-bottom:10px;
+.hc-eyebrow {
+  font-size:10px; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--gold); margin-bottom:8px;
 }
 .hc-title {
-  font-family:'Playfair Display',serif;
-  font-size:20px; font-weight:700;
-  color:var(--ink); margin-bottom:8px;
+  font-family:'Instrument Serif',serif;
+  font-size:18px; color:var(--ink); margin-bottom:6px;
   line-height:1.3;
 }
-.hc-desc { font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:16px; }
-.hc-badge-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
-.hc-badge {
-  padding:4px 10px; border-radius:4px;
-  font-size:11px; font-weight:600;
+.hc-meta { font-size:12px; color:var(--muted); margin-bottom:14px; line-height:1.6; }
+.hc-badges { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+.badge {
+  padding:3px 9px; border-radius:4px;
+  font-size:10px; font-weight:700; letter-spacing:.04em;
 }
-.badge-new { background:#FFF4DC; color:var(--gold); }
-.badge-free { background:var(--green-lt); color:var(--green); }
-.badge-begin { background:var(--sky); color:var(--blue); }
-.hc-btn {
-  width:100%; padding:12px;
-  background:var(--blue); color:white;
+.b-new  { background:var(--gold-lt); color:var(--gold); }
+.b-free { background:var(--green-lt); color:var(--green); }
+.b-beg  { background:var(--sky); color:var(--blue); }
+.b-next { background:var(--purple-lt); color:var(--purple); }
+.btn-primary {
+  width:100%; padding:13px;
+  background:var(--blue); color:var(--white);
   border:none; border-radius:6px;
-  font-family:'Outfit',sans-serif;
-  font-size:14px; font-weight:700;
-  cursor:pointer; transition:background 0.2s;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px; font-weight:600;
+  cursor:pointer; transition:background .2s;
+  letter-spacing:.01em;
 }
-.hc-btn:hover { background:var(--blue2); }
+.btn-primary:hover { background:var(--blue2); }
 
-/* ── TABS ── */
-.tabs-wrap {
+/* ── TABS ────────────────────────────────── */
+.tabs-bar {
   background:var(--cream);
   border-bottom:1px solid var(--border);
-  padding:0 40px;
-  display:flex; gap:0; overflow-x:auto;
+  display:flex; overflow-x:auto;
+  padding:0 32px; gap:2px;
 }
-.tab {
-  padding:14px 22px;
-  font-size:14px; font-weight:500;
-  color:var(--muted); cursor:pointer;
-  border-bottom:2.5px solid transparent;
-  white-space:nowrap; transition:all 0.2s;
-  background:none; border-top:none; border-left:none; border-right:none;
-  font-family:'Outfit',sans-serif;
+.tab-btn {
+  padding:13px 18px;
+  font-size:13px; font-weight:500;
+  color:var(--muted); background:none;
+  border:none; border-bottom:2.5px solid transparent;
+  cursor:pointer; white-space:nowrap;
+  font-family:'DM Sans',sans-serif;
+  transition:all .2s;
 }
-.tab.active { color:var(--blue); border-bottom-color:var(--blue); font-weight:600; }
-.tab:hover:not(.active) { color:var(--ink); }
+.tab-btn.on { color:var(--blue); border-bottom-color:var(--blue); font-weight:600; }
+.tab-btn:hover:not(.on) { color:var(--ink); }
 
-/* ── MAIN CONTENT ── */
-.main { max-width:1200px; margin:0 auto; padding:48px 40px; }
-.section-title {
-  font-family:'Playfair Display',serif;
-  font-size:26px; font-weight:700;
-  color:var(--ink); letter-spacing:-0.5px;
-  margin-bottom:6px;
-}
-.section-sub { font-size:14px; color:var(--muted); margin-bottom:28px; }
+/* ── MAIN ────────────────────────────────── */
+.main { max-width:1140px; margin:0 auto; padding:44px 32px 80px; }
 
-/* ── FEATURED LESSON ── */
-.featured-grid {
-  display:grid; grid-template-columns:1fr 360px;
-  gap:24px; margin-bottom:56px;
+/* section heading */
+.sec-hd { margin-bottom:28px; }
+.sec-title {
+  font-family:'Instrument Serif',serif;
+  font-size:24px; color:var(--ink); letter-spacing:-.5px;
 }
-.featured-main {
-  background:var(--ink);
-  border-radius:12px; overflow:hidden;
-  position:relative; min-height:300px;
-  display:flex; flex-direction:column;
-  justify-content:flex-end; padding:32px;
-}
-.featured-main::before {
-  content:'';
-  position:absolute; inset:0;
-  background:radial-gradient(ellipse at top right, rgba(10,61,145,0.5), transparent 60%);
-}
-.featured-play {
-  position:absolute; top:50%; left:50%;
-  transform:translate(-50%,-60%);
-  width:64px; height:64px;
-  background:rgba(255,255,255,0.15);
-  border:2px solid rgba(255,255,255,0.4);
-  border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition:all 0.2s; z-index:1;
-}
-.featured-play:hover { background:rgba(255,255,255,0.25); transform:translate(-50%,-60%) scale(1.08); }
-.featured-play svg { margin-left:4px; }
-.feat-content { position:relative; z-index:1; }
-.feat-tag {
-  display:inline-block; padding:3px 10px;
-  background:rgba(196,125,10,0.25);
-  border:1px solid rgba(196,125,10,0.4);
-  border-radius:3px; font-size:11px;
-  font-weight:700; color:#F0C060;
-  letter-spacing:0.08em; text-transform:uppercase;
-  margin-bottom:10px;
-}
-.feat-title {
-  font-family:'Playfair Display',serif;
-  font-size:24px; font-weight:700;
-  color:white; line-height:1.3;
-  margin-bottom:8px; letter-spacing:-0.5px;
-}
-.feat-meta {
-  font-size:12px; color:rgba(255,255,255,0.45);
-  display:flex; gap:16px;
-}
+.sec-sub { font-size:13px; color:var(--muted); margin-top:3px; }
 
-/* Sidebar lessons */
-.sidebar-lessons { display:flex; flex-direction:column; gap:12px; }
-.sidebar-lesson {
-  background:white; border:1px solid var(--border);
-  border-radius:10px; padding:16px 18px;
-  display:flex; gap:14px; align-items:flex-start;
-  cursor:pointer; transition:all 0.2s;
-  text-decoration:none; color:inherit;
+/* progress banner */
+.prog-banner {
+  background:var(--blue); border-radius:10px;
+  padding:22px 28px;
+  display:flex; align-items:center; gap:20px;
+  margin-bottom:36px; flex-wrap:wrap;
 }
-.sidebar-lesson:hover { border-color:var(--blue); box-shadow:var(--card-sh); transform:translateX(3px); }
-.sl-num {
-  width:36px; height:36px; border-radius:8px;
-  background:var(--sky); display:flex;
-  align-items:center; justify-content:center;
-  font-family:'Playfair Display',serif;
-  font-size:14px; font-weight:700;
-  color:var(--blue); flex-shrink:0;
+.pb-emoji { font-size:28px; flex-shrink:0; }
+.pb-txt { flex:1; min-width:180px; }
+.pb-title { font-family:'Instrument Serif',serif; font-size:17px; color:white; margin-bottom:2px; }
+.pb-sub { font-size:12px; color:rgba(255,255,255,.55); }
+.pb-track { flex:1; min-width:140px; max-width:200px; }
+.pb-track-top { display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,.5); margin-bottom:5px; }
+.pb-bar { height:5px; background:rgba(255,255,255,.15); border-radius:3px; overflow:hidden; }
+.pb-fill { height:100%; background:white; border-radius:3px; transition:width .6s; }
+.pb-cta {
+  padding:9px 18px; background:white; color:var(--blue);
+  border:none; border-radius:6px; font-family:'DM Sans',sans-serif;
+  font-size:13px; font-weight:700; cursor:pointer;
+  white-space:nowrap; transition:opacity .2s;
 }
-.sl-num.locked { background:var(--cream); color:var(--muted); }
-.sl-num.done { background:var(--green-lt); color:var(--green); }
-.sl-content { flex:1; }
-.sl-title {
-  font-size:14px; font-weight:600;
-  color:var(--ink); margin-bottom:3px;
-  line-height:1.35;
-}
-.sl-meta { font-size:12px; color:var(--muted); display:flex; gap:10px; }
-.sl-lock { font-size:14px; color:var(--border); margin-top:8px; }
+.pb-cta:hover { opacity:.88; }
 
-/* ── LESSON GRID ── */
+/* ── LESSON GRID ─────────────────────────── */
 .lesson-grid {
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
-  gap:20px; margin-bottom:56px;
+  grid-template-columns:repeat(auto-fill,minmax(316px,1fr));
+  gap:20px; margin-bottom:52px;
 }
-.lesson-card {
-  background:white; border:1px solid var(--border);
-  border-radius:12px; overflow:hidden;
-  transition:all 0.25s; cursor:pointer;
-  text-decoration:none; color:inherit;
+.lcard {
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--card-r);
+  overflow:hidden;
   display:flex; flex-direction:column;
+  transition:transform .22s, box-shadow .22s, border-color .22s;
+  cursor:pointer;
 }
-.lesson-card:hover {
+.lcard:hover {
+  transform:translateY(-4px);
+  box-shadow:0 10px 36px rgba(11,62,170,.12);
   border-color:var(--blue);
-  box-shadow:0 8px 32px rgba(10,61,145,0.12);
-  transform:translateY(-3px);
 }
-.lc-thumb {
-  height:140px; background:var(--ink);
-  display:flex; align-items:center; justify-content:center;
+.lcard.locked { opacity:.58; cursor:default; }
+.lcard.locked:hover { transform:none; box-shadow:none; border-color:var(--border); }
+.lcard.done { border-color:var(--green); }
+
+/* thumb */
+.lcard-thumb {
+  height:136px; background:var(--ink);
   position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
 }
-.lc-thumb::before {
-  content:''; position:absolute; inset:0;
-}
-.thumb-1::before { background:radial-gradient(ellipse at 30% 50%, rgba(10,61,145,0.7), rgba(8,17,31,0.9)); }
-.thumb-2::before { background:radial-gradient(ellipse at 70% 30%, rgba(196,125,10,0.5), rgba(8,17,31,0.9)); }
-.thumb-3::before { background:radial-gradient(ellipse at 50% 80%, rgba(26,107,58,0.5), rgba(8,17,31,0.9)); }
-.thumb-4::before { background:radial-gradient(ellipse at 20% 20%, rgba(184,64,32,0.4), rgba(8,17,31,0.9)); }
-.thumb-5::before { background:radial-gradient(ellipse at 80% 60%, rgba(10,61,145,0.6), rgba(8,17,31,0.9)); }
-.thumb-6::before { background:radial-gradient(ellipse at 40% 40%, rgba(100,20,180,0.4), rgba(8,17,31,0.9)); }
+.thumb-bg { position:absolute; inset:0; }
+.tb1 { background:radial-gradient(ellipse at 25% 60%, rgba(11,62,170,.7), rgba(7,14,28,.95)); }
+.tb2 { background:radial-gradient(ellipse at 75% 35%, rgba(184,120,0,.55), rgba(7,14,28,.95)); }
+.tb3 { background:radial-gradient(ellipse at 50% 80%, rgba(26,107,58,.55), rgba(7,14,28,.95)); }
+.tb4 { background:radial-gradient(ellipse at 30% 30%, rgba(184,60,24,.45), rgba(7,14,28,.95)); }
+.tb5 { background:radial-gradient(ellipse at 70% 70%, rgba(92,31,189,.55), rgba(7,14,28,.95)); }
+.tb6 { background:radial-gradient(ellipse at 50% 20%, rgba(11,62,170,.5), rgba(7,14,28,.95)); }
 .thumb-num {
-  font-family:'Playfair Display',serif;
-  font-size:56px; font-weight:900;
-  color:rgba(255,255,255,0.08);
-  position:absolute; right:12px; bottom:-8px;
-  line-height:1; z-index:0;
+  font-family:'Instrument Serif',serif;
+  font-size:64px; color:rgba(255,255,255,.06);
+  position:absolute; right:10px; bottom:-10px;
+  line-height:1; pointer-events:none;
 }
-.thumb-icon { font-size:32px; position:relative; z-index:1; }
-.thumb-badge {
-  position:absolute; top:12px; left:12px;
-  padding:3px 10px; border-radius:3px;
+.thumb-icon { font-size:30px; position:relative; z-index:1; }
+.thumb-tag {
+  position:absolute; top:10px; left:10px;
+  padding:3px 9px; border-radius:4px;
   font-size:10px; font-weight:700;
-  letter-spacing:0.08em; text-transform:uppercase;
-  z-index:1;
+  letter-spacing:.06em; text-transform:uppercase; z-index:1;
 }
-.tb-new { background:rgba(196,125,10,0.9); color:white; }
-.tb-free { background:rgba(26,107,58,0.9); color:white; }
-.tb-lock { background:rgba(8,17,31,0.7); color:rgba(255,255,255,0.5); border:1px solid rgba(255,255,255,0.1); }
-.lc-body { padding:18px 20px; flex:1; display:flex; flex-direction:column; }
-.lc-module { font-size:11px; font-weight:700; color:var(--blue); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px; }
-.lc-title {
-  font-family:'Playfair Display',serif;
-  font-size:16px; font-weight:700;
-  color:var(--ink); margin-bottom:8px;
-  line-height:1.35; letter-spacing:-0.3px;
+.tt-new  { background:rgba(184,120,0,.9); color:white; }
+.tt-free { background:rgba(26,107,58,.9); color:white; }
+.tt-lock { background:rgba(7,14,28,.7); color:rgba(255,255,255,.45); border:1px solid rgba(255,255,255,.1); }
+.tt-done { background:rgba(26,107,58,.95); color:white; }
+.thumb-done-ring {
+  position:absolute; top:10px; right:10px;
+  width:28px; height:28px; border-radius:50%;
+  background:var(--green); display:flex;
+  align-items:center; justify-content:center;
+  font-size:13px; z-index:1;
 }
-.lc-desc { font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:14px; flex:1; }
-.lc-footer {
-  display:flex; align-items:center;
-  justify-content:space-between;
-  padding-top:14px;
-  border-top:1px solid var(--border);
+
+/* card body */
+.lcard-body { padding:16px 18px; flex:1; display:flex; flex-direction:column; }
+.lcard-module {
+  font-size:10px; font-weight:700; color:var(--blue);
+  letter-spacing:.1em; text-transform:uppercase; margin-bottom:5px;
 }
-.lc-types { display:flex; gap:6px; }
-.lc-type {
-  padding:3px 8px; border-radius:3px;
+.lcard-title {
+  font-family:'Instrument Serif',serif;
+  font-size:16px; color:var(--ink); margin-bottom:7px;
+  line-height:1.35; letter-spacing:-.3px;
+}
+.lcard-desc { font-size:12px; color:var(--muted); line-height:1.65; flex:1; margin-bottom:14px; }
+.lcard-footer {
+  display:flex; align-items:center; justify-content:space-between;
+  padding-top:12px; border-top:1px solid var(--cream);
+}
+.lcard-types { display:flex; gap:5px; }
+.ltype {
+  padding:2px 7px; border-radius:3px;
   font-size:10px; font-weight:600;
   background:var(--cream); color:var(--muted);
 }
-.lc-type.video { background:var(--sky); color:var(--blue); }
-.lc-type.audio { background:var(--gold-lt); color:var(--gold); }
-.lc-type.pdf { background:var(--green-lt); color:var(--green); }
-.lc-dur { font-size:12px; color:var(--muted); font-weight:500; }
+.lt-v { background:var(--sky); color:var(--blue); }
+.lt-a { background:var(--gold-lt); color:var(--gold); }
+.lt-p { background:var(--green-lt); color:var(--green); }
+.lcard-dur { font-size:11px; color:var(--muted); }
 
-/* ── PROGRESS BANNER ── */
-.progress-banner {
-  background:var(--blue); border-radius:12px;
-  padding:28px 32px;
-  display:flex; align-items:center; gap:24px;
-  margin-bottom:40px; color:white;
+/* ── PROGRESS TABLE ──────────────────────── */
+.prog-table { background:var(--white); border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:52px; }
+.pt-head {
+  display:grid; grid-template-columns:2fr 1fr 1fr 80px;
+  padding:11px 20px;
+  background:var(--ink); color:rgba(255,255,255,.5);
+  font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
 }
-.pb-icon { font-size:36px; flex-shrink:0; }
-.pb-content { flex:1; }
-.pb-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; margin-bottom:4px; }
-.pb-sub { font-size:13px; color:rgba(255,255,255,0.6); }
-.pb-bar-wrap { flex:1; max-width:200px; }
-.pb-bar-label { font-size:12px; color:rgba(255,255,255,0.6); margin-bottom:6px; display:flex; justify-content:space-between; }
-.pb-bar { height:6px; background:rgba(255,255,255,0.15); border-radius:3px; overflow:hidden; }
-.pb-fill { height:100%; background:white; border-radius:3px; width:8%; }
-.pb-btn {
-  padding:10px 20px; background:white;
-  color:var(--blue); border:none;
-  border-radius:6px; font-family:'Outfit',sans-serif;
-  font-size:13px; font-weight:700;
-  cursor:pointer; transition:opacity 0.2s; white-space:nowrap;
+.pt-row {
+  display:grid; grid-template-columns:2fr 1fr 1fr 80px;
+  padding:14px 20px; border-bottom:1px solid var(--cream);
+  align-items:center; cursor:pointer; transition:background .15s;
 }
-.pb-btn:hover { opacity:0.9; }
+.pt-row:last-child { border-bottom:none; }
+.pt-row:hover { background:var(--paper); }
+.pt-row.done { background:rgba(26,107,58,.03); }
+.pt-name { font-size:13px; font-weight:500; color:var(--ink); display:flex; align-items:center; gap:10px; }
+.pt-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.pt-status { font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px; width:fit-content; }
+.ps-done    { background:var(--green-lt); color:var(--green); }
+.ps-current { background:var(--sky); color:var(--blue); }
+.ps-lock    { background:var(--cream); color:var(--muted); }
+.pt-types { display:flex; gap:4px; }
+.pt-action { justify-self:end; }
+.btn-sm {
+  padding:6px 14px; border-radius:5px;
+  font-size:12px; font-weight:600;
+  border:1.5px solid var(--blue); color:var(--blue);
+  background:transparent; cursor:pointer;
+  font-family:'DM Sans',sans-serif; transition:all .18s;
+}
+.btn-sm:hover { background:var(--blue); color:white; }
+.btn-sm.done-btn { border-color:var(--green); color:var(--green); }
+.btn-sm.done-btn:hover { background:var(--green); color:white; }
+.btn-sm.locked-btn { border-color:var(--border); color:var(--muted); cursor:default; }
+.btn-sm.locked-btn:hover { background:transparent; color:var(--muted); }
 
-/* ── INSTRUCTOR ── */
-.instructor-card {
-  background:white; border:1px solid var(--border);
-  border-radius:12px; padding:28px 32px;
-  display:flex; gap:24px; align-items:flex-start;
+/* ── INSTRUCTOR ──────────────────────────── */
+.inst-card {
+  background:var(--white); border:1px solid var(--border);
+  border-radius:10px; padding:26px 28px;
+  display:flex; gap:22px; align-items:flex-start;
   margin-bottom:40px;
 }
-.inst-avatar {
-  width:72px; height:72px; border-radius:12px;
-  background:var(--blue); display:flex;
-  align-items:center; justify-content:center;
-  font-family:'Playfair Display',serif;
-  font-size:28px; font-weight:700;
-  color:white; flex-shrink:0;
+.inst-av {
+  width:68px; height:68px; border-radius:12px;
+  background:var(--blue); display:flex; align-items:center;
+  justify-content:center; font-family:'Instrument Serif',serif;
+  font-size:26px; color:white; flex-shrink:0;
 }
-.inst-label { font-size:11px; font-weight:700; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px; }
-.inst-name {
-  font-family:'Playfair Display',serif;
-  font-size:22px; font-weight:700;
-  color:var(--ink); letter-spacing:-0.5px; margin-bottom:4px;
-}
-.inst-role { font-size:13px; color:var(--blue); font-weight:600; margin-bottom:10px; }
-.inst-bio { font-size:14px; color:var(--muted); line-height:1.7; max-width:520px; }
-.inst-stats { display:flex; gap:24px; margin-top:16px; }
-.is-val { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--ink); }
-.is-lbl { font-size:11px; color:var(--muted); }
+.inst-lbl { font-size:10px; font-weight:700; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; }
+.inst-name { font-family:'Instrument Serif',serif; font-size:21px; color:var(--ink); letter-spacing:-.5px; }
+.inst-role { font-size:13px; color:var(--blue); font-weight:600; margin-bottom:9px; }
+.inst-bio { font-size:13px; color:var(--muted); line-height:1.7; max-width:500px; }
+.inst-kpis { display:flex; gap:22px; margin-top:14px; }
+.ik-val { font-family:'Instrument Serif',serif; font-size:19px; color:var(--ink); }
+.ik-lbl { font-size:11px; color:var(--muted); }
 
-/* ── FOOTER ── */
-footer {
-  background:var(--ink); color:white;
-  padding:40px; text-align:center;
-  margin-top:40px;
-}
-.footer-brand {
-  font-family:'Playfair Display',serif;
-  font-size:20px; font-weight:700; color:white;
-  margin-bottom:8px;
-}
-.footer-brand em { font-style:italic; color:#7AADFF; }
-.footer-sub { font-size:13px; color:rgba(255,255,255,0.4); margin-bottom:20px; }
-.footer-links { display:flex; gap:24px; justify-content:center; flex-wrap:wrap; margin-bottom:24px; }
-.footer-links a { font-size:13px; color:rgba(255,255,255,0.5); text-decoration:none; }
-.footer-links a:hover { color:white; }
-.footer-copy { font-size:12px; color:rgba(255,255,255,0.25); }
-
-/* ── MODAL ── */
-.modal-overlay {
-  position:fixed; inset:0; z-index:200;
-  background:rgba(8,17,31,0.7);
+/* ── MODAL ───────────────────────────────── */
+.overlay {
+  position:fixed; inset:0; z-index:800;
+  background:rgba(7,14,28,.72);
   display:flex; align-items:center; justify-content:center;
   padding:20px; opacity:0; pointer-events:none;
-  transition:opacity 0.25s;
+  transition:opacity .25s;
 }
-.modal-overlay.show { opacity:1; pointer-events:all; }
+.overlay.open { opacity:1; pointer-events:all; }
 .modal {
-  background:white; border-radius:16px;
-  padding:32px; max-width:520px; width:100%;
-  transform:translateY(20px); transition:transform 0.25s;
+  background:var(--white); border-radius:14px;
+  padding:30px; max-width:500px; width:100%;
+  transform:translateY(18px); transition:transform .25s;
+  max-height:90vh; overflow-y:auto;
 }
-.modal-overlay.show .modal { transform:translateY(0); }
-.modal-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--ink); margin-bottom:6px; }
-.modal-sub { font-size:14px; color:var(--muted); margin-bottom:20px; line-height:1.6; }
-.modal-types { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
-.modal-type {
+.overlay.open .modal { transform:translateY(0); }
+.modal-title { font-family:'Instrument Serif',serif; font-size:22px; color:var(--ink); margin-bottom:4px; letter-spacing:-.5px; }
+.modal-sub { font-size:13px; color:var(--muted); margin-bottom:20px; line-height:1.6; }
+.modal-opts { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+.mopt {
   display:flex; gap:14px; align-items:center;
-  border:1.5px solid var(--border); border-radius:10px;
-  padding:14px 16px; cursor:pointer; transition:all 0.2s;
+  border:1.5px solid var(--border); border-radius:9px;
+  padding:14px 16px; cursor:pointer; transition:all .18s;
   text-decoration:none; color:inherit;
 }
-.modal-type:hover { border-color:var(--blue); background:var(--sky); }
-.mt-icon { font-size:22px; width:40px; text-align:center; flex-shrink:0; }
-.mt-label { font-size:15px; font-weight:600; color:var(--ink); margin-bottom:2px; }
-.mt-desc { font-size:12px; color:var(--muted); }
+.mopt:hover { border-color:var(--blue); background:var(--sky); }
+.mopt-icon { font-size:22px; width:36px; text-align:center; flex-shrink:0; }
+.mopt-title { font-size:14px; font-weight:600; color:var(--ink); margin-bottom:2px; }
+.mopt-desc { font-size:12px; color:var(--muted); }
 .modal-close {
-  width:100%; padding:12px;
-  background:var(--cream); border:none;
-  border-radius:8px; font-family:'Outfit',sans-serif;
-  font-size:14px; font-weight:600;
-  color:var(--muted); cursor:pointer;
+  width:100%; padding:11px;
+  background:var(--cream); border:none; border-radius:8px;
+  font-family:'DM Sans',sans-serif; font-size:13px;
+  font-weight:600; color:var(--muted); cursor:pointer;
 }
 
-/* ── SEARCH ── */
-.search-bar {
-  width:100%; padding:12px 18px 12px 44px;
-  border:1.5px solid var(--border);
-  border-radius:8px; font-family:'Outfit',sans-serif;
-  font-size:14px; color:var(--ink);
-  background:white; outline:none;
-  transition:border-color 0.2s;
-  margin-bottom:28px;
+/* ── SEARCH ──────────────────────────────── */
+.search-wrap { position:relative; margin-bottom:28px; }
+.search-ico { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+.search-in {
+  width:100%; padding:11px 16px 11px 42px;
+  border:1.5px solid var(--border); border-radius:8px;
+  font-family:'DM Sans',sans-serif; font-size:14px;
+  color:var(--ink); background:var(--white); outline:none;
+  transition:border-color .18s;
 }
-.search-bar:focus { border-color:var(--blue); }
-.search-wrap { position:relative; }
-.search-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); }
+.search-in:focus { border-color:var(--blue); }
 
-@media(max-width:900px){
-  .hero { grid-template-columns:1fr; padding:60px 24px 0; }
-  .hero-card { border-radius:12px; margin-bottom:24px; }
-  .featured-grid { grid-template-columns:1fr; }
-  nav { padding:0 24px; }
-  .tabs-wrap { padding:0 24px; }
-  .main { padding:32px 24px; }
+/* ── FOOTER ──────────────────────────────── */
+footer {
+  background:var(--ink); color:white;
+  padding:36px 32px; text-align:center;
+}
+.ft-logo { font-family:'Instrument Serif',serif; font-size:19px; margin-bottom:6px; }
+.ft-logo i { font-style:italic; color:#7AADFF; }
+.ft-sub { font-size:12px; color:rgba(255,255,255,.35); margin-bottom:16px; }
+.ft-links { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin-bottom:16px; }
+.ft-links a { font-size:12px; color:rgba(255,255,255,.45); text-decoration:none; }
+.ft-links a:hover { color:white; }
+.ft-copy { font-size:11px; color:rgba(255,255,255,.2); }
+
+@media(max-width:860px){
+  .hero { grid-template-columns:1fr; padding:48px 20px 0; }
+  .hero-card { border-radius:10px; margin-bottom:20px; }
+  nav, .main, .tabs-bar { padding-left:20px; padding-right:20px; }
   .lesson-grid { grid-template-columns:1fr; }
-  .instructor-card { flex-direction:column; }
-  .progress-banner { flex-wrap:wrap; }
-  footer { padding:32px 24px; }
+  .pt-head, .pt-row { grid-template-columns:2fr 1fr 60px; }
+  .pt-types { display:none; }
+  .inst-card { flex-direction:column; }
 }
 </style>
 </head>
@@ -501,372 +449,389 @@ footer {
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">Swahili <em>AI</em> Trainer</a>
-  <div class="nav-links">
-    <a href="#masomo" class="active">Masomo</a>
-    <a href="#maendeleo">Maendeleo Yangu</a>
-    <a href="#mkufunzi">Mkufunzi</a>
-  </div>
-  <div class="nav-right">
-    <a href="https://wa.me/255652365501" target="_blank" class="btn-outline">WhatsApp</a>
-    <a href="https://lovely-puppy-475709.netlify.app" target="_blank" class="btn-solid">Gundua Njia Yangu →</a>
-  </div>
+  <a href="#" class="nav-logo">Swahili <i>AI</i> Trainer</a>
+  <button class="nav-pill on" onclick="showTab('masomo',this)">Masomo</button>
+  <button class="nav-pill" onclick="showTab('maendeleo',this)">Maendeleo Yangu</button>
+  <button class="nav-pill" onclick="showTab('mkufunzi',this)">Mkufunzi</button>
+  <div class="nav-sep"></div>
+  <a href="https://wa.me/255652365501" target="_blank" class="nav-wa">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    WhatsApp
+  </a>
 </nav>
 
 <!-- HERO -->
-<div class="hero">
+<div class="hero" id="top">
   <div class="hero-grid"></div>
-  <div class="hero-content">
+  <div class="hero-glow"></div>
+  <div class="hero-text">
     <div class="hero-eyebrow">✦ Jukwaa la Kwanza la AI — Kiswahili</div>
-    <h1 class="hero-title">Jifunze <em>Akili Bandia</em><br>kwa Lugha Yako</h1>
-    <p class="hero-sub">Masomo ya AI yaliyoundwa maalum kwa Watanzania — kwa Kiswahili safi, mifano ya kweli, na njia tatu za kujifunzia: Video, Audio, na PDF.</p>
-    <div class="hero-stats">
-      <div><div class="h-stat-val">11</div><div class="h-stat-lbl">Masomo yaliyopo</div></div>
-      <div><div class="h-stat-val">655+</div><div class="h-stat-lbl">Wanafunzi</div></div>
-      <div><div class="h-stat-val">Bure</div><div class="h-stat-lbl">Somo la kwanza</div></div>
+    <h1 class="hero-title">Jifunze <i>Akili Bandia</i><br>kwa Lugha Yako</h1>
+    <p class="hero-sub">Masomo ya AI yaliyoundwa maalum kwa Watanzania — Video, Audio, na PDF. Bure. Kwa Kiswahili.</p>
+    <div class="hero-kpis">
+      <div><div class="kpi-val" id="kpi-masomo">6</div><div class="kpi-lbl">Masomo yaliyopangwa</div></div>
+      <div><div class="kpi-val">655+</div><div class="kpi-lbl">Wanafunzi</div></div>
+      <div><div class="kpi-val" id="kpi-done">0</div><div class="kpi-lbl">Umekamilisha</div></div>
     </div>
   </div>
-  <!-- Hero Card -->
   <div class="hero-card">
-    <div class="hc-label">✦ Somo Jipya — Anza Leo</div>
-    <div class="hc-title">Somo la 1: AI ni Nini Hasa?</div>
-    <div class="hc-desc">Dhana 4 za msingi, historia ya AI, aina zake, na kwa nini ujifunze. Kazi ya vitendo mwishoni.</div>
-    <div class="hc-badge-row">
-      <span class="hc-badge badge-new">Mpya</span>
-      <span class="hc-badge badge-free">Bure</span>
-      <span class="hc-badge badge-begin">Mwanzo</span>
+    <div class="hc-eyebrow">✦ Inaendelea — Anza Leo</div>
+    <div class="hc-title" id="hc-next-title">Somo la 1: AI ni Nini Hasa?</div>
+    <div class="hc-meta" id="hc-next-meta">Dhana 4 za msingi · Dakika 45 · Mwanzo kabisa</div>
+    <div class="hc-badges">
+      <span class="badge b-free">Bure</span>
+      <span class="badge b-beg">Mwanzo</span>
+      <span class="badge b-new" id="hc-next-badge">Somo la 1</span>
     </div>
-    <button class="hc-btn" onclick="openModal('Somo la 1: AI ni Nini Hasa?', 'Dhana 4 za msingi za AI kwa Kiswahili — maana, historia, aina, na kwa nini ujifunze.')">
-      Anza Kusoma →
-    </button>
+    <button class="btn-primary" id="hc-next-btn" onclick="openNext()">Anza Somo →</button>
   </div>
 </div>
 
 <!-- TABS -->
-<div class="tabs-wrap">
-  <button class="tab active" onclick="setTab(this,'all')">Masomo Yote</button>
-  <button class="tab" onclick="setTab(this,'available')">Yaliyopo</button>
-  <button class="tab" onclick="setTab(this,'coming')">Yanayokuja</button>
+<div class="tabs-bar">
+  <button class="tab-btn on" onclick="showTab('masomo',this)">Masomo Yote</button>
+  <button class="tab-btn" onclick="showTab('maendeleo',this)">Maendeleo Yangu</button>
+  <button class="tab-btn" onclick="showTab('mkufunzi',this)">Mkufunzi</button>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-  <!-- PROGRESS BANNER -->
-  <div class="progress-banner" id="maendeleo">
-    <div class="pb-icon">🎯</div>
-    <div class="pb-content">
-      <div class="pb-title">Endelea na Safari Yako!</div>
-      <div class="pb-sub">Somo la 1 linakusubiri. Anza leo — hata dakika 15 zinatoa matokeo.</div>
+  <!-- ══ TAB: MASOMO ══ -->
+  <div id="tab-masomo">
+
+    <!-- progress banner -->
+    <div class="prog-banner">
+      <div class="pb-emoji">🎯</div>
+      <div class="pb-txt">
+        <div class="pb-title" id="pb-title">Safari yako inaanza sasa!</div>
+        <div class="pb-sub" id="pb-sub">Somo la 1 linakusubiri. Anza leo — hata dakika 15 zinatoa matokeo.</div>
+      </div>
+      <div class="pb-track">
+        <div class="pb-track-top"><span>Maendeleo</span><span id="pb-frac">0 / 6</span></div>
+        <div class="pb-bar"><div class="pb-fill" id="pb-fill" style="width:0%"></div></div>
+      </div>
+      <button class="pb-cta" onclick="openNext()">Endelea →</button>
     </div>
-    <div class="pb-bar-wrap">
-      <div class="pb-bar-label"><span>Maendeleo</span><span>1/11</span></div>
-      <div class="pb-bar"><div class="pb-fill"></div></div>
+
+    <div class="sec-hd">
+      <div class="sec-title">Masomo Yote</div>
+      <div class="sec-sub">Bonyeza somo lolote kuliona — chagua Video, Audio, au PDF</div>
     </div>
-    <button class="pb-btn" onclick="openModal('Somo la 1: AI ni Nini Hasa?','Dhana 4 za msingi za AI kwa Kiswahili.')">Endelea →</button>
+
+    <div class="search-wrap">
+      <svg class="search-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-in" placeholder="Tafuta somo..." oninput="filterCards(this.value)">
+    </div>
+
+    <div class="lesson-grid" id="lgrid"></div>
   </div>
 
-  <!-- FEATURED -->
-  <div id="masomo">
-    <div class="section-title">Somo Linaloendelea</div>
-    <p class="section-sub">Somo lako la sasa hivi — liko tayari kukufundisha</p>
-    <div class="featured-grid">
-      <div class="featured-main">
-        <div class="hero-grid"></div>
-        <div class="featured-play" onclick="openModal('Somo la 1: AI ni Nini Hasa?','Dhana 4 za msingi za AI kwa Kiswahili.')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-        <div class="feat-content">
-          <div class="feat-tag">Somo la 1 · Unaendelea</div>
-          <div class="feat-title">AI ni Nini Hasa? — Mwanzo Kabisa</div>
-          <div class="feat-meta">
-            <span>🎬 Video · 🎧 Audio · 📄 PDF</span>
-            <span>Dakika 45</span>
-            <span>Dhana 4</span>
-          </div>
-        </div>
+  <!-- ══ TAB: MAENDELEO ══ -->
+  <div id="tab-maendeleo" style="display:none">
+    <div class="sec-hd">
+      <div class="sec-title">Maendeleo Yako</div>
+      <div class="sec-sub">Fuatilia safari yako ya AI — masomo uliyokamilisha na yanayobaki</div>
+    </div>
+    <div class="prog-table">
+      <div class="pt-head">
+        <div>Somo</div>
+        <div>Hali</div>
+        <div>Aina</div>
+        <div></div>
       </div>
-
-      <!-- Sidebar -->
-      <div class="sidebar-lessons">
-        <div style="font-size:13px;font-weight:700;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;">Masomo Yanayofuata</div>
-
-        <a href="#" class="sidebar-lesson" onclick="openModal('Somo la 2: Jinsi ya Kuzungumza na AI','Jifunza sanaa ya Prompt Engineering kwa Kiswahili.'); return false;">
-          <div class="sl-num">2</div>
-          <div class="sl-content">
-            <div class="sl-title">Jinsi ya Kuzungumza na AI — Prompt Engineering</div>
-            <div class="sl-meta"><span>🎬 🎧 📄</span><span>Dakika 50</span></div>
-          </div>
-        </a>
-
-        <a href="#" class="sidebar-lesson" onclick="openModal('Somo la 3: AI kwa Biashara','Jinsi ya kutumia AI kukua biashara yako Tanzania.'); return false;">
-          <div class="sl-num">3</div>
-          <div class="sl-content">
-            <div class="sl-title">AI kwa Biashara Yako — Vitendo vya Kweli</div>
-            <div class="sl-meta"><span>🎬 🎧 📄</span><span>Dakika 55</span></div>
-          </div>
-        </a>
-
-        <a href="#" class="sidebar-lesson" onclick="return false;">
-          <div class="sl-num locked">🔒</div>
-          <div class="sl-content">
-            <div class="sl-title" style="color:var(--muted)">Somo la 4: AI kwa Walimu na Wanafunzi</div>
-            <div class="sl-meta"><span>Inakuja hivi karibuni</span></div>
-          </div>
-        </a>
-
-        <a href="#" class="sidebar-lesson" onclick="return false;">
-          <div class="sl-num locked">🔒</div>
-          <div class="sl-content">
-            <div class="sl-title" style="color:var(--muted)">Somo la 5: Kufanya Pesa kwa AI</div>
-            <div class="sl-meta"><span>Inakuja hivi karibuni</span></div>
-          </div>
-        </a>
-      </div>
+      <div id="ptable"></div>
     </div>
   </div>
 
-  <!-- ALL LESSONS -->
-  <div class="section-title">Masomo Yote</div>
-  <p class="section-sub">Orodha kamili ya safari yako ya AI — kutoka mwanzo hadi mtaalamu</p>
-
-  <div class="search-wrap">
-    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input class="search-bar" placeholder="Tafuta somo..." oninput="filterLessons(this.value)">
-  </div>
-
-  <div class="lesson-grid" id="lessonGrid">
-
-    <!-- Somo 1 -->
-    <div class="lesson-card" onclick="openModal('Somo la 1: AI ni Nini Hasa?','Dhana 4 za msingi: maana ya AI, historia fupi, aina za AI, na kwa nini ujifunze. Kazi ya vitendo mwishoni.')">
-      <div class="lc-thumb thumb-1">
-        <div class="thumb-num">01</div>
-        <div class="thumb-icon">🤖</div>
-        <span class="thumb-badge tb-free">Bure</span>
-      </div>
-      <div class="lc-body">
-        <div class="lc-module">Moduli 1 · Misingi</div>
-        <div class="lc-title">AI ni Nini Hasa?</div>
-        <div class="lc-desc">Maana ya Akili Bandia, historia fupi, aina 6 za AI, na sababu 5 za kujifunza. Kamili kwa mwanzo.</div>
-        <div class="lc-footer">
-          <div class="lc-types">
-            <span class="lc-type video">🎬 Video</span>
-            <span class="lc-type audio">🎧 Audio</span>
-            <span class="lc-type pdf">📄 PDF</span>
-          </div>
-          <div class="lc-dur">45 dak</div>
-        </div>
-      </div>
+  <!-- ══ TAB: MKUFUNZI ══ -->
+  <div id="tab-mkufunzi" style="display:none">
+    <div class="sec-hd">
+      <div class="sec-title">Mkufunzi Wako</div>
+      <div class="sec-sub">Mtu aliyeunda na kuendesha Swahili AI Trainer</div>
     </div>
-
-    <!-- Somo 2 -->
-    <div class="lesson-card" onclick="openModal('Somo la 2: Jinsi ya Kuzungumza na AI','Jifunza Prompt Engineering kwa Kiswahili — jinsi ya kuandika maelekezo mazuri ili AI ikupe matokeo bora.')">
-      <div class="lc-thumb thumb-2">
-        <div class="thumb-num">02</div>
-        <div class="thumb-icon">💬</div>
-        <span class="thumb-badge tb-new">Hivi Karibuni</span>
-      </div>
-      <div class="lc-body">
-        <div class="lc-module">Moduli 1 · Misingi</div>
-        <div class="lc-title">Jinsi ya Kuzungumza na AI</div>
-        <div class="lc-desc">Sanaa ya Prompt Engineering kwa Kiswahili — sehemu 4 za prompt nzuri na mifano ya Tanzania.</div>
-        <div class="lc-footer">
-          <div class="lc-types">
-            <span class="lc-type video">🎬 Video</span>
-            <span class="lc-type audio">🎧 Audio</span>
-            <span class="lc-type pdf">📄 PDF</span>
-          </div>
-          <div class="lc-dur">50 dak</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Somo 3 -->
-    <div class="lesson-card" onclick="openModal('Somo la 3: AI kwa Biashara','Jinsi mama wa biashara, mkulima, na mjasiriamali anavyoweza kutumia AI kukua haraka zaidi Tanzania.')">
-      <div class="lc-thumb thumb-3">
-        <div class="thumb-num">03</div>
-        <div class="thumb-icon">💼</div>
-        <span class="thumb-badge tb-new">Hivi Karibuni</span>
-      </div>
-      <div class="lc-body">
-        <div class="lc-module">Moduli 2 · Vitendo</div>
-        <div class="lc-title">AI kwa Biashara Yako</div>
-        <div class="lc-desc">Matangazo, kujibu wateja, kupanga biashara — mifano halisi ya wafanyabiashara wa Tanzania.</div>
-        <div class="lc-footer">
-          <div class="lc-types">
-            <span class="lc-type video">🎬 Video</span>
-            <span class="lc-type audio">🎧 Audio</span>
-            <span class="lc-type pdf">📄 PDF</span>
-          </div>
-          <div class="lc-dur">55 dak</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Somo 4 -->
-    <div class="lesson-card" style="opacity:0.6;pointer-events:none;">
-      <div class="lc-thumb thumb-4">
-        <div class="thumb-num">04</div>
-        <div class="thumb-icon">📚</div>
-        <span class="thumb-badge tb-lock">🔒 Inakuja</span>
-      </div>
-      <div class="lc-body">
-        <div class="lc-module">Moduli 2 · Vitendo</div>
-        <div class="lc-title">AI kwa Walimu na Wanafunzi</div>
-        <div class="lc-desc">Andaa masomo, tengeneza maswali ya mtihani, na saidia wanafunzi kujifunza vizuri zaidi.</div>
-        <div class="lc-footer">
-          <div class="lc-types">
-            <span class="lc-type video">🎬 Video</span>
-            <span class="lc-type audio">🎧 Audio</span>
-            <span class="lc-type pdf">📄 PDF</span>
-          </div>
-          <div class="lc-dur">~ 50 dak</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Somo 5 -->
-    <div class="lesson-card" style="opacity:0.6;pointer-events:none;">
-      <div class="lc-thumb thumb-5">
-        <div class="thumb-num">05</div>
-        <div class="thumb-icon">💰</div>
-        <span class="thumb-badge tb-lock">🔒 Inakuja</span>
-      </div>
-      <div class="lc-body">
-        <div class="lc-module">Moduli 3 · Mapato</div>
-        <div class="lc-title">Fanya Pesa kwa AI</div>
-        <div class="lc-desc">Njia 7 za kweli za kupata mapato kwa AI Tanzania — bila ahadi za uongo, kazi ya kweli.</div>
-        <div class="lc-footer">
-          <div class="lc-types">
-            <span class="lc-type video">🎬 Video</span>
-            <span class="lc-type audio">🎧 Audio</span>
-            <span class="lc-type pdf">📄 PDF</span>
-          </div>
-          <div class="lc-dur">~ 60 dak</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Somo 6 -->
-    <div class="lesson-card" style="opacity:0.6;pointer-events:none;">
-      <div class="lc-thumb thumb-6">
-        <div class="thumb-num">06</div>
-        <div class="thumb-icon">🛡️</div>
-        <span class="thumb-badge tb-lock">🔒 Inakuja</span>
-      </div>
-      <div class="lc-body">
-        <div class="lc-module">Moduli 3 · Usalama</div>
-        <div class="lc-title">Usalama na Maadili ya AI</div>
-        <div class="lc-desc">Mambo usiyopaswa kumwambia AI, jinsi ya kuthibitisha habari, na haki za kazi za ubunifu.</div>
-        <div class="lc-footer">
-          <div class="lc-types">
-            <span class="lc-type video">🎬 Video</span>
-            <span class="lc-type audio">🎧 Audio</span>
-            <span class="lc-type pdf">📄 PDF</span>
-          </div>
-          <div class="lc-dur">~ 40 dak</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- INSTRUCTOR -->
-  <div id="mkufunzi">
-    <div class="section-title">Mkufunzi Wako</div>
-    <p class="section-sub">Mtu aliyeunda na kuendesha Swahili AI Trainer</p>
-    <div class="instructor-card">
-      <div class="inst-avatar">LT</div>
+    <div class="inst-card">
+      <div class="inst-av">LT</div>
       <div style="flex:1">
-        <div class="inst-label">Mkufunzi Mkuu</div>
+        <div class="inst-lbl">Mkufunzi Mkuu</div>
         <div class="inst-name">Laurent Tungaraza</div>
         <div class="inst-role">Mwanzilishi · Swahili AI Trainer</div>
-        <div class="inst-bio">Laurent ni mtaalamu wa AI anayeamini kwamba teknolojia ya kisasa ni haki ya kila Mtanzania — si ya wachache wenye elimu ya juu. Baada ya kujifunza AI kwa nguvu yake mwenyewe, alianza Swahili AI Trainer ili hakuna mtu atakayeachwa nyuma katika mapinduzi haya ya kidijitali.</div>
-        <div class="inst-stats">
-          <div><div class="is-val">655+</div><div class="is-lbl">Wanafunzi</div></div>
-          <div><div class="is-val">11</div><div class="is-lbl">Masomo</div></div>
-          <div><div class="is-val">4.9★</div><div class="is-lbl">Tathmini</div></div>
+        <div class="inst-bio">Laurent ni mtaalamu wa AI anayeamini kwamba teknolojia ya kisasa ni haki ya kila Mtanzania — si ya wachache wenye elimu ya juu. Baada ya kujifunza AI kwa nguvu yake mwenyewe, alianza Swahili AI Trainer ili hakuna mtu atakayeachwa nyuma katika mapinduzi haya ya kidijitali. Dhamira yake ni kujenga chuo kikubwa cha AI cha Kiswahili — kama Coursera lakini kwa Afrika.</div>
+        <div class="inst-kpis">
+          <div><div class="ik-val">655+</div><div class="ik-lbl">Wanafunzi</div></div>
+          <div><div class="ik-val" id="inst-k2">6</div><div class="ik-lbl">Masomo</div></div>
+          <div><div class="ik-val">4.9★</div><div class="ik-lbl">Tathmini</div></div>
         </div>
       </div>
-      <a href="https://wa.me/255652365501" target="_blank" class="btn-solid" style="align-self:center">Wasiliana →</a>
+      <a href="https://wa.me/255652365501" target="_blank" class="nav-wa" style="align-self:center;border-radius:6px">Wasiliana →</a>
     </div>
   </div>
 
-</div>
+</div><!-- /main -->
 
-<!-- FOOTER -->
 <footer>
-  <div class="footer-brand">Swahili <em>AI</em> Trainer</div>
-  <div class="footer-sub">Akili Bandia kwa Watanzania · Tanzania Mbele · 2025</div>
-  <div class="footer-links">
-    <a href="#masomo">Masomo</a>
+  <div class="ft-logo">Swahili <i>AI</i> Trainer</div>
+  <div class="ft-sub">Akili Bandia kwa Watanzania · Laurent Tungaraza · 2025</div>
+  <div class="ft-links">
+    <a href="#" onclick="showTab('masomo')">Masomo</a>
     <a href="https://lovely-puppy-475709.netlify.app" target="_blank">Gundua Njia Yako</a>
     <a href="https://wa.me/255652365501" target="_blank">WhatsApp</a>
-    <a href="#">Facebook</a>
-    <a href="#">Instagram</a>
+    <a href="https://www.facebook.com/SwahiliAITrainer" target="_blank">Facebook</a>
+    <a href="https://www.instagram.com/SwahiliAITrainer" target="_blank">Instagram</a>
   </div>
-  <div class="footer-copy">© 2025 Swahili AI Trainer · Laurent Tungaraza. Haki zote zimehifadhiwa.</div>
+  <div class="ft-copy">© 2025 Swahili AI Trainer. Haki zote zimehifadhiwa.</div>
 </footer>
 
 <!-- MODAL -->
-<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+<div class="overlay" id="overlay" onclick="closeModal(event)">
   <div class="modal">
-    <div class="modal-title" id="modal-title">Somo la 1</div>
-    <div class="modal-sub" id="modal-sub">Chagua njia unayotaka kujifunzia leo.</div>
-    <div class="modal-types">
-      <a href="https://lovely-puppy-475709.netlify.app" target="_blank" class="modal-type">
-        <div class="mt-icon">🎬</div>
-        <div><div class="mt-label">Video Tutorial</div><div class="mt-desc">Angalia na ufuate hatua kwa hatua — njia inayofaa zaidi kwa wanaoanza</div></div>
-      </a>
-      <a href="https://lovely-puppy-475709.netlify.app" target="_blank" class="modal-type">
-        <div class="mt-icon">🎧</div>
-        <div><div class="mt-label">Audio</div><div class="mt-desc">Sikiliza ukiwa njiani, kazini, au nyumbani — bila kuangalia skrini</div></div>
-      </a>
-      <a href="https://lovely-puppy-475709.netlify.app" target="_blank" class="modal-type">
-        <div class="mt-icon">📄</div>
-        <div><div class="mt-label">Notes za PDF</div><div class="mt-desc">Soma offline, chapa, au hifadhi simu yako — bila mtandao</div></div>
-      </a>
-    </div>
-    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('show')">Funga</button>
+    <div class="modal-title" id="m-title">Somo</div>
+    <div class="modal-sub" id="m-sub">Chagua njia unayotaka kujifunzia:</div>
+    <div class="modal-opts" id="m-opts"></div>
+    <button class="modal-close" onclick="document.getElementById('overlay').classList.remove('open')">Funga</button>
   </div>
 </div>
 
 <script>
-function openModal(title, desc) {
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-sub').textContent = desc + ' Chagua njia unayotaka kujifunzia:';
-  document.getElementById('modal').classList.add('show');
+// ══════════════════════════════════════════
+//  DATA — masomo 6
+// ══════════════════════════════════════════
+const LESSONS = [
+  {
+    id:1, num:'01', icon:'🤖', thumb:'tb1', module:'Moduli 1 · Misingi',
+    title:'AI ni Nini Hasa?',
+    desc:'Dhana 4 za msingi: maana ya AI, historia fupi, aina 6, na sababu 5 za kujifunza. Kazi ya vitendo mwishoni.',
+    dur:'45 dak', free:true, available:true,
+    video:'https://youtube.com/shorts/Wi3gqqVyMl4?feature=share',
+    audio:'',
+    pdf:'https://github.com/laurenttungaraza-cmyk/Laurent-Tungaraza-CMYK-Swahili-AI-trainer-/blob/af2e45808db875eb5f290fcc1bbba59a9476d9ef/Swahili_AI_Trainer_Somo1_Notes.pdf',
+    types:['v','p'],
+  },
+  {
+    id:2, num:'02', icon:'🛠️', thumb:'tb2', module:'Moduli 1 · Misingi',
+    title:'Aina za AI na Zana Unazohitaji',
+    desc:'Chatbots (Claude, ChatGPT, Gemini), AI za picha, video, na sauti — zana bure unazoweza kutumia leo hii.',
+    dur:'50 dak', free:true, available:true,
+    video:'https://www.youtube.com/@SwahiliAITrainer',
+    audio:'https://drive.google.com/drive/folders/1SwahiliAITrainer',
+    pdf:'https://lovely-puppy-475709.netlify.app',
+    types:['v','a','p'],
+  },
+  {
+    id:3, num:'03', icon:'💬', thumb:'tb3', module:'Moduli 1 · Misingi',
+    title:'Jinsi ya Kuzungumza na AI — Prompt Engineering',
+    desc:'Sanaa ya kuandika maelekezo mazuri kwa AI ili upate matokeo bora. Sehemu 4 za prompt nzuri na mifano halisi.',
+    dur:'55 dak', free:true, available:false,
+    types:['v','a','p'],
+  },
+  {
+    id:4, num:'04', icon:'💼', thumb:'tb4', module:'Moduli 2 · Vitendo',
+    title:'AI kwa Biashara Yako',
+    desc:'Matangazo, kujibu wateja, kupanga biashara — mifano halisi ya wafanyabiashara Tanzania wanaotumia AI.',
+    dur:'60 dak', free:false, available:false,
+    types:['v','a','p'],
+  },
+  {
+    id:5, num:'05', icon:'📚', thumb:'tb5', module:'Moduli 2 · Vitendo',
+    title:'AI kwa Walimu na Wanafunzi',
+    desc:'Andaa masomo, tengeneza maswali ya mtihani, na saidia wanafunzi kujifunza vizuri zaidi kwa AI.',
+    dur:'50 dak', free:false, available:false,
+    types:['v','a','p'],
+  },
+  {
+    id:6, num:'06', icon:'💰', thumb:'tb6', module:'Moduli 3 · Mapato',
+    title:'Fanya Pesa kwa AI',
+    desc:'Njia 7 za kweli za kupata mapato kwa AI Tanzania — bila ahadi za uongo, kazi ya kweli na mifano halisi.',
+    dur:'65 dak', free:false, available:false,
+    types:['v','a','p'],
+  },
+];
+
+// ══════════════════════════════════════════
+//  PROGRESS — localStorage
+// ══════════════════════════════════════════
+function getProgress() {
+  try { return JSON.parse(localStorage.getItem('sat_prog') || '{}'); } catch(e){ return {}; }
 }
+function setDone(id, v) {
+  const p = getProgress(); p[id] = v;
+  try { localStorage.setItem('sat_prog', JSON.stringify(p)); } catch(e){}
+  refresh();
+}
+function isDone(id) { return !!getProgress()[id]; }
+
+// ══════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════
+function typeLabel(t) {
+  if(t==='v') return '<span class="ltype lt-v">🎬 Video</span>';
+  if(t==='a') return '<span class="ltype lt-a">🎧 Audio</span>';
+  if(t==='p') return '<span class="ltype lt-p">📄 PDF</span>';
+  return '';
+}
+function ptTypeLabel(t) {
+  if(t==='v') return '<span class="ltype lt-v" style="font-size:10px">🎬</span>';
+  if(t==='a') return '<span class="ltype lt-a" style="font-size:10px">🎧</span>';
+  if(t==='p') return '<span class="ltype lt-p" style="font-size:10px">📄</span>';
+  return '';
+}
+
+function renderGrid(filter='') {
+  const grid = document.getElementById('lgrid');
+  const filt = filter.trim().toLowerCase();
+  grid.innerHTML = LESSONS
+    .filter(l => !filt || l.title.toLowerCase().includes(filt) || l.desc.toLowerCase().includes(filt))
+    .map(l => {
+      const done = isDone(l.id);
+      const locked = !l.available;
+      let tag = '';
+      if(done) tag = '<span class="thumb-tag tt-done">✓ Imekamilika</span>';
+      else if(!l.available) tag = '<span class="thumb-tag tt-lock">🔒 Inakuja</span>';
+      else if(l.id <= 2) tag = '<span class="thumb-tag tt-free">Bure</span>';
+      const doneRing = done ? '<div class="thumb-done-ring">✓</div>' : '';
+      const cls = `lcard${locked?' locked':''}${done?' done':''}`;
+      const onclick = locked ? '' : `onclick="openLesson(${l.id})"`;
+      return `
+        <div class="${cls}" ${onclick}>
+          <div class="lcard-thumb ${l.thumb}">
+            <div class="thumb-bg"></div>
+            <div class="thumb-num">${l.num}</div>
+            <div class="thumb-icon">${l.icon}</div>
+            ${tag}${doneRing}
+          </div>
+          <div class="lcard-body">
+            <div class="lcard-module">${l.module}</div>
+            <div class="lcard-title">${l.title}</div>
+            <div class="lcard-desc">${l.desc}</div>
+            <div class="lcard-footer">
+              <div class="lcard-types">${l.types.map(typeLabel).join('')}</div>
+              <div class="lcard-dur">${l.dur}</div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+}
+
+function renderTable() {
+  const t = document.getElementById('ptable');
+  t.innerHTML = LESSONS.map(l => {
+    const done = isDone(l.id);
+    const locked = !l.available;
+    const dotColor = done ? 'var(--green)' : locked ? 'var(--border)' : 'var(--blue)';
+    const statusCls = done ? 'ps-done' : locked ? 'ps-lock' : 'ps-current';
+    const statusTxt = done ? '✓ Imekamilika' : locked ? '🔒 Inakuja' : '▶ Inaendelea';
+    const btnCls = done ? 'done-btn' : locked ? 'locked-btn' : '';
+    const btnTxt = done ? 'Rudia' : locked ? 'Inakuja' : 'Anza →';
+    const btnAction = locked ? '' : `onclick="openLesson(${l.id})"`;
+    return `
+      <div class="pt-row${done?' done':''}" ${locked?'':''}>
+        <div class="pt-name">
+          <div class="pt-dot" style="background:${dotColor}"></div>
+          ${l.icon} ${l.title}
+        </div>
+        <div><span class="pt-status ${statusCls}">${statusTxt}</span></div>
+        <div class="pt-types">${l.types.map(ptTypeLabel).join('')}</div>
+        <div class="pt-action">
+          <button class="btn-sm ${btnCls}" ${btnAction}>${btnTxt}</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function updateKPIs() {
+  const done = LESSONS.filter(l=>isDone(l.id)).length;
+  const total = LESSONS.length;
+  document.getElementById('kpi-done').textContent = done;
+  document.getElementById('pb-frac').textContent = `${done} / ${total}`;
+  document.getElementById('pb-fill').style.width = `${(done/total)*100}%`;
+  if(done === 0) {
+    document.getElementById('pb-title').textContent = 'Safari yako inaanza sasa!';
+    document.getElementById('pb-sub').textContent = 'Somo la 1 linakusubiri. Anza leo — hata dakika 15 zinatoa matokeo.';
+  } else if(done === total) {
+    document.getElementById('pb-title').textContent = 'Hongera — Umekamilisha masomo yote! 🎉';
+    document.getElementById('pb-sub').textContent = 'Umefanikiwa. Sehemu ya moduli 2 inakuja hivi karibuni.';
+  } else {
+    const next = LESSONS.find(l=>!isDone(l.id) && l.available);
+    if(next) {
+      document.getElementById('pb-title').textContent = `Endelea vizuri! Masomo ${done}/${total} yamekamilika.`;
+      document.getElementById('pb-sub').textContent = `Kinachofuata: ${next.title}`;
+      document.getElementById('hc-next-title').textContent = `Somo la ${next.id}: ${next.title}`;
+      document.getElementById('hc-next-meta').textContent = `${next.module} · ${next.dur}`;
+      document.getElementById('hc-next-badge').textContent = `Somo la ${next.id}`;
+    }
+  }
+}
+
+function refresh() {
+  renderGrid();
+  renderTable();
+  updateKPIs();
+}
+
+// ══════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════
+function openLesson(id) {
+  const l = LESSONS.find(x=>x.id===id);
+  if(!l || !l.available) return;
+  document.getElementById('m-title').textContent = `Somo la ${l.id}: ${l.title}`;
+  document.getElementById('m-sub').textContent = `${l.module} · ${l.dur} · Chagua njia unayotaka kujifunzia:`;
+
+  const done = isDone(l.id);
+  const allOpts = [
+    { icon:'🎬', label:'Video Tutorial', desc:'Angalia na ufuate hatua kwa hatua', url: l.video },
+    { icon:'🎧', label:'Audio', desc:'Sikiliza ukiwa njiani au ukifanya kazi nyingine', url: l.audio },
+    { icon:'📄', label:'PDF Notes', desc:'Soma offline, chapa, au hifadhi simu yako', url: l.pdf },
+  ];
+  const opts = allOpts.filter(o => o.url && o.url.length > 0);
+  document.getElementById('m-opts').innerHTML = opts.map(o=>`
+    <a href="${o.url}" target="_blank" class="mopt" onclick="markDone(${l.id})">
+      <div class="mopt-icon">${o.icon}</div>
+      <div><div class="mopt-title">${o.label}</div><div class="mopt-desc">${o.desc}</div></div>
+    </a>`).join('') +
+  (allOpts[1].url==='' ? `<div style="padding:10px 14px;border:1.5px dashed var(--border);border-radius:9px;display:flex;gap:12px;align-items:center;opacity:.5"><div style="font-size:22px">🎧</div><div><div style="font-size:14px;font-weight:600;color:var(--ink)">Audio — Inakuja Hivi Karibuni</div><div style="font-size:12px;color:var(--muted)">Mkufunzi anaandaa audio ya somo hili</div></div></div>` : '') +
+    `<div style="margin-top:4px;padding-top:12px;border-top:1px solid var(--cream);display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="ck-${l.id}" ${done?'checked':''} onchange="setDone(${l.id},this.checked)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--green)">
+      <label for="ck-${l.id}" style="font-size:13px;color:var(--muted);cursor:pointer">Nimekamilisha somo hili</label>
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+
+function markDone(id) {
+  setTimeout(()=>{ setDone(id,true); }, 1800);
+}
+
+function openNext() {
+  const next = LESSONS.find(l=>!isDone(l.id) && l.available);
+  if(next) openLesson(next.id);
+}
+
 function closeModal(e) {
-  if (e.target.id === 'modal') document.getElementById('modal').classList.remove('show');
+  if(e.target.id==='overlay') document.getElementById('overlay').classList.remove('open');
 }
-function setTab(btn, tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  const cards = document.querySelectorAll('.lesson-card');
-  cards.forEach(c => {
-    const isLocked = c.style.opacity === '0.6';
-    if (tab === 'all') c.style.display = 'flex';
-    else if (tab === 'available') c.style.display = isLocked ? 'none' : 'flex';
-    else if (tab === 'coming') c.style.display = isLocked ? 'flex' : 'none';
+
+// ══════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════
+const TABS = ['masomo','maendeleo','mkufunzi'];
+function showTab(name, btn) {
+  TABS.forEach(t=>{
+    document.getElementById('tab-'+t).style.display = t===name?'block':'none';
+  });
+  document.querySelectorAll('.tab-btn, .nav-pill').forEach(b=>{
+    b.classList.toggle('on', b===btn||b.textContent.trim().toLowerCase().startsWith(name==='masomo'?'masomo':name==='maendeleo'?'maendeleo':'mkufunzi'));
   });
 }
-function filterLessons(q) {
-  const cards = document.querySelectorAll('.lesson-card');
-  const query = q.toLowerCase();
-  cards.forEach(c => {
-    const text = c.textContent.toLowerCase();
-    c.style.display = text.includes(query) ? 'flex' : 'none';
-  });
-}
-// Scroll reveal
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.style.opacity = '1'; });
-}, { threshold: 0.1 });
-document.querySelectorAll('.lesson-card').forEach(c => {
-  c.style.transition = 'opacity 0.5s ease, transform 0.25s, border-color 0.2s, box-shadow 0.25s';
-  observer.observe(c);
-});
+
+// ══════════════════════════════════════════
+//  SEARCH
+// ══════════════════════════════════════════
+function filterCards(q) { renderGrid(q); }
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+refresh();
 </script>
 </body>
 </html>
