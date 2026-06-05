@@ -612,10 +612,10 @@ const LESSONS = [
     title:'Aina za AI na Zana Unazohitaji',
     desc:'Chatbots (Claude, ChatGPT, Gemini), AI za picha, video, na sauti — zana bure unazoweza kutumia leo hii.',
     dur:'50 dak', free:true, available:true,
-    video:'https://www.youtube.com/@SwahiliAITrainer',
-    audio:'https://drive.google.com/drive/folders/1SwahiliAITrainer',
-    pdf:'https://lovely-puppy-475709.netlify.app',
-    types:['v','a','p'],
+    video:'',
+    audio:'',
+    pdf:'https://github.com/laurenttungaraza-cmyk/Laurent-Tungaraza-CMYK-Swahili-AI-trainer-/blob/02c76909c4cb776b5459f52d981a8eb90aae296b/Swahili_AI_Trainer_Somo2_AinaZaAI.pdf',
+    types:['p'],
   },
   {
     id:3, num:'03', icon:'💬', thumb:'tb3', module:'Moduli 1 · Misingi',
@@ -784,12 +784,17 @@ function openLesson(id) {
     { icon:'📄', label:'PDF Notes', desc:'Soma offline, chapa, au hifadhi simu yako', url: l.pdf },
   ];
   const opts = allOpts.filter(o => o.url && o.url.length > 0);
+  const comingSoon = allOpts
+    .filter(o => !o.url || o.url.length === 0)
+    .map(o => `<div style="padding:10px 14px;border:1.5px dashed var(--border);border-radius:9px;display:flex;gap:12px;align-items:center;opacity:.45;margin-bottom:2px">
+      <div style="font-size:22px">${o.icon}</div>
+      <div><div style="font-size:14px;font-weight:600;color:var(--ink)">${o.label} — Inakuja Hivi Karibuni</div>
+      <div style="font-size:12px;color:var(--muted)">Mkufunzi anaandaa ${o.label.toLowerCase()} ya somo hili</div></div></div>`).join('');
   document.getElementById('m-opts').innerHTML = opts.map(o=>`
     <a href="${o.url}" target="_blank" class="mopt" onclick="markDone(${l.id})">
       <div class="mopt-icon">${o.icon}</div>
       <div><div class="mopt-title">${o.label}</div><div class="mopt-desc">${o.desc}</div></div>
-    </a>`).join('') +
-  (allOpts[1].url==='' ? `<div style="padding:10px 14px;border:1.5px dashed var(--border);border-radius:9px;display:flex;gap:12px;align-items:center;opacity:.5"><div style="font-size:22px">🎧</div><div><div style="font-size:14px;font-weight:600;color:var(--ink)">Audio — Inakuja Hivi Karibuni</div><div style="font-size:12px;color:var(--muted)">Mkufunzi anaandaa audio ya somo hili</div></div></div>` : '') +
+    </a>`).join('') + comingSoon +
     `<div style="margin-top:4px;padding-top:12px;border-top:1px solid var(--cream);display:flex;align-items:center;gap:10px">
       <input type="checkbox" id="ck-${l.id}" ${done?'checked':''} onchange="setDone(${l.id},this.checked)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--green)">
       <label for="ck-${l.id}" style="font-size:13px;color:var(--muted);cursor:pointer">Nimekamilisha somo hili</label>
